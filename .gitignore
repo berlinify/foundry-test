@@ -1,0 +1,19 @@
+# BMAD — render cache and personal overrides
+_bmad/render/
+_bmad/custom/*.user.toml
+_bmad/bmm/config.user.yaml
+_bmad/config.user.toml
+
+# Local tooling / machine-specific
+.foundry/
+.claude/settings.local.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
