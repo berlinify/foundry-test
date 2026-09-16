@@ -1,0 +1,10 @@
+story_id: '1.1'
+assignee: alirezajm@hotmail.com
+agent: dev
+claimed_at: '2026-09-16T09:53:14Z'
+branch: story/1.1-repository-skeleton-with-enforced-module
+lease_expires: '2026-09-16T13:53:14Z'
+touches:
+- app/Modules/**
+- deptrac.yaml
+- .gitlab-ci.yml
