@@ -1,0 +1,1063 @@
+# Module boundary enforcement — TAD §4.1, rules 1-5.
+#
+# Generated shape, hand-maintained from here on:
+#   * `Platform` is a single layer — the whole module is public to every other module.
+#   * Every other module contributes TWO layers:
+#       `<Module>.Contracts` — the public API (interfaces + DTOs), importable by anyone;
+#       `<Module>`           — everything else (Domain, Application, Infrastructure,
+#                              Http, Console, Listeners, Database, Tests): internal.
+#   * `App` is the Laravel host application. It may reach contracts, never internals,
+#     and no module may reach back into it.
+#
+# Adding a module means adding its two layers AND its ruleset entry AND adding its
+# `.Contracts` layer to every other ruleset. Run `composer guard:boundaries` after.
+
+deptrac:
+  paths:
+    - ./app
+
+  layers:
+    - name: Platform
+      collectors:
+        - type: classLike
+          value: '^Modules\\Platform\\'
+
+    - name: Identity.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Identity\\Contracts\\'
+
+    - name: Identity
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Identity\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Identity\\Contracts\\'
+
+    - name: Tenancy.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Tenancy\\Contracts\\'
+
+    - name: Tenancy
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Tenancy\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Tenancy\\Contracts\\'
+
+    - name: Merchant.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Merchant\\Contracts\\'
+
+    - name: Merchant
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Merchant\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Merchant\\Contracts\\'
+
+    - name: Acceptance.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Acceptance\\Contracts\\'
+
+    - name: Acceptance
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Acceptance\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Acceptance\\Contracts\\'
+
+    - name: Agent.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Agent\\Contracts\\'
+
+    - name: Agent
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Agent\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Agent\\Contracts\\'
+
+    - name: Device.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Device\\Contracts\\'
+
+    - name: Device
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Device\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Device\\Contracts\\'
+
+    - name: Release.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Release\\Contracts\\'
+
+    - name: Release
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Release\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Release\\Contracts\\'
+
+    - name: Sale.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Sale\\Contracts\\'
+
+    - name: Sale
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Sale\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Sale\\Contracts\\'
+
+    - name: Payment.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Payment\\Contracts\\'
+
+    - name: Payment
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Payment\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Payment\\Contracts\\'
+
+    - name: Customer.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Customer\\Contracts\\'
+
+    - name: Customer
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Customer\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Customer\\Contracts\\'
+
+    - name: Messaging.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Messaging\\Contracts\\'
+
+    - name: Messaging
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Messaging\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Messaging\\Contracts\\'
+
+    - name: Notification.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Notification\\Contracts\\'
+
+    - name: Notification
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Notification\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Notification\\Contracts\\'
+
+    - name: Bot.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Bot\\Contracts\\'
+
+    - name: Bot
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Bot\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Bot\\Contracts\\'
+
+    - name: Marketplace.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Marketplace\\Contracts\\'
+
+    - name: Marketplace
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Marketplace\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Marketplace\\Contracts\\'
+
+    - name: Reporting.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Reporting\\Contracts\\'
+
+    - name: Reporting
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Reporting\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Reporting\\Contracts\\'
+
+    - name: Integration.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Integration\\Contracts\\'
+
+    - name: Integration
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Integration\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Integration\\Contracts\\'
+
+    - name: Audit.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Audit\\Contracts\\'
+
+    - name: Audit
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Audit\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Audit\\Contracts\\'
+
+    - name: Api.Contracts
+      collectors:
+        - type: classLike
+          value: '^Modules\\Api\\Contracts\\'
+
+    - name: Api
+      collectors:
+        - type: bool
+          must:
+            - type: classLike
+              value: '^Modules\\Api\\'
+          must_not:
+            - type: classLike
+              value: '^Modules\\Api\\Contracts\\'
+
+    - name: App
+      collectors:
+        - type: classLike
+          value: '^App\\'
+
+  ruleset:
+    # Platform is the base. It depends on no other module, by design:
+    # anything Platform needed from a business module would be a cycle.
+    Platform: ~
+
+    # Identity: contracts are pure — they may not reach their own module's internals.
+    Identity.Contracts:
+      - Platform
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Identity:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Tenancy: contracts are pure — they may not reach their own module's internals.
+    Tenancy.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Tenancy:
+      - Platform
+      - Tenancy.Contracts
+      - Identity.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Merchant: contracts are pure — they may not reach their own module's internals.
+    Merchant.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Merchant:
+      - Platform
+      - Merchant.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Acceptance: contracts are pure — they may not reach their own module's internals.
+    Acceptance.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Acceptance:
+      - Platform
+      - Acceptance.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Agent: contracts are pure — they may not reach their own module's internals.
+    Agent.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Agent:
+      - Platform
+      - Agent.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Device: contracts are pure — they may not reach their own module's internals.
+    Device.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Device:
+      - Platform
+      - Device.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Release: contracts are pure — they may not reach their own module's internals.
+    Release.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Release:
+      - Platform
+      - Release.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Sale: contracts are pure — they may not reach their own module's internals.
+    Sale.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Sale:
+      - Platform
+      - Sale.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Payment: contracts are pure — they may not reach their own module's internals.
+    Payment.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Payment:
+      - Platform
+      - Payment.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Customer: contracts are pure — they may not reach their own module's internals.
+    Customer.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Customer:
+      - Platform
+      - Customer.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Messaging: contracts are pure — they may not reach their own module's internals.
+    Messaging.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Messaging:
+      - Platform
+      - Messaging.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Notification: contracts are pure — they may not reach their own module's internals.
+    Notification.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Notification:
+      - Platform
+      - Notification.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Bot: contracts are pure — they may not reach their own module's internals.
+    Bot.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Bot:
+      - Platform
+      - Bot.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Marketplace: contracts are pure — they may not reach their own module's internals.
+    Marketplace.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Marketplace:
+      - Platform
+      - Marketplace.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Reporting: contracts are pure — they may not reach their own module's internals.
+    Reporting.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Reporting:
+      - Platform
+      - Reporting.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Integration: contracts are pure — they may not reach their own module's internals.
+    Integration.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+    Integration:
+      - Platform
+      - Integration.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Audit.Contracts
+      - Api.Contracts
+
+    # Audit: contracts are pure — they may not reach their own module's internals.
+    Audit.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Api.Contracts
+    Audit:
+      - Platform
+      - Audit.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Api.Contracts
+
+    # Api: contracts are pure — they may not reach their own module's internals.
+    Api.Contracts:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+    Api:
+      - Platform
+      - Api.Contracts
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+
+    # The Laravel host wires modules together through their public API only.
+    App:
+      - Platform
+      - Identity.Contracts
+      - Tenancy.Contracts
+      - Merchant.Contracts
+      - Acceptance.Contracts
+      - Agent.Contracts
+      - Device.Contracts
+      - Release.Contracts
+      - Sale.Contracts
+      - Payment.Contracts
+      - Customer.Contracts
+      - Messaging.Contracts
+      - Notification.Contracts
+      - Bot.Contracts
+      - Marketplace.Contracts
+      - Reporting.Contracts
+      - Integration.Contracts
+      - Audit.Contracts
+      - Api.Contracts

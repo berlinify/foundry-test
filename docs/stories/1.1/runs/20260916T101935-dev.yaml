@@ -1,0 +1,10 @@
+story_id: '1.1'
+agent: dev
+actor: alirezajm@hotmail.com
+at: '2026-09-16T10:19:35Z'
+model: claude-opus-5
+method_digest: ceae93741a20e610
+spec_digest: 5e66c52f123b154b
+inputs: {}
+outputs: {}
+files_touched: []
