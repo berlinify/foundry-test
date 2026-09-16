@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Architecture Validation — PayStar Market TAD</title>
+<style>
+:root{--bg:#fbfaf8;--fg:#1a1a18;--mut:#6b6a65;--line:#e2dfd8;--card:#fff;
+--crit:#b3261e;--high:#b5610a;--med:#8a7412;--low:#5a6b7a;--ok:#2f6b4a;--accent:#1f4f7a}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#15161a;--fg:#e8e6e1;--mut:#9a988f;
+--line:#2c2e35;--card:#1c1e23;--crit:#ff6b5e;--high:#ffa54d;--med:#e0c04a;--low:#9db4c7;--ok:#6fcf97;--accent:#7fb8e8}}
+:root[data-theme=dark]{--bg:#15161a;--fg:#e8e6e1;--mut:#9a988f;--line:#2c2e35;--card:#1c1e23;
+--crit:#ff6b5e;--high:#ffa54d;--med:#e0c04a;--low:#9db4c7;--ok:#6fcf97;--accent:#7fb8e8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);
+font:16px/1.65 ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:48px 24px 96px}
+h1{font-size:1.9rem;line-height:1.2;margin:0 0 6px}h2{font-size:1.25rem;margin:44px 0 14px;
+padding-bottom:7px;border-bottom:1px solid var(--line)}h3{font-size:1rem;margin:26px 0 6px}
+.meta{color:var(--mut);font-size:.88rem;margin-bottom:22px}
+.meta code{background:transparent;color:var(--mut)}
+.grade{display:inline-block;padding:5px 14px;border-radius:999px;font-weight:650;font-size:.9rem;
+background:color-mix(in srgb,var(--high) 16%,transparent);color:var(--high);
+border:1px solid color-mix(in srgb,var(--high) 40%,transparent)}
+.lede{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);
+border-radius:8px;padding:18px 20px;margin:22px 0}
+.lede p{margin:0 0 12px}.lede p:last-child{margin:0}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.93rem;display:block;overflow-x:auto}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-weight:620;color:var(--mut);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+.v-strong{color:var(--ok);font-weight:620}.v-adequate{color:var(--low);font-weight:620}
+.v-thin{color:var(--med);font-weight:620}.v-broken{color:var(--crit);font-weight:700}
+.f{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin:12px 0}
+.f.critical{border-left:3px solid var(--crit)}.f.high{border-left:3px solid var(--high)}
+.f.medium{border-left:3px solid var(--med)}.f.low{border-left:3px solid var(--low)}
+.tag{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+padding:2px 7px;border-radius:4px;margin-right:8px;vertical-align:2px}
+.critical .tag{background:var(--crit);color:#fff}.high .tag{background:var(--high);color:#fff}
+.medium .tag{background:var(--med);color:#1a1a18}.low .tag{background:var(--low);color:#fff}
+.f h3{margin:0 0 6px;display:inline}.loc{color:var(--mut);font-size:.85rem;font-weight:400}
+.f p{margin:9px 0 0;font-size:.95rem}.fix{color:var(--ok);font-weight:600}
+code{background:color-mix(in srgb,var(--fg) 8%,transparent);padding:1px 5px;border-radius:4px;
+font-size:.87em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.good{background:color-mix(in srgb,var(--ok) 9%,transparent);border:1px solid color-mix(in srgb,var(--ok) 28%,transparent);
+border-radius:8px;padding:16px 20px;margin:16px 0}.good h2{border:0;margin-top:0}
+ul{padding-left:20px}li{margin:5px 0}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--line);color:var(--mut);font-size:.83rem}
+</style></head><body><div class="wrap">
+
+<h1>Architecture Validation — PayStar Market TAD</h1>
+<div class="meta">
+<code>Paystar Market TAD.md</code> · v0.1 Draft · ~1,754 lines<br>
+Parent: <code>Paystar Market PAD.md</code> v1 · Sibling: <code>Paystar Market PRD.md</code> — unusable (corrupt extraction)<br>
+Run 2026-09-16 · bmad-architecture, Validate intent
+</div>
+<p><span class="grade">Fair — strong design, stale inputs</span></p>
+
+<div class="lede">
+<p>This is a well-made architecture document. The invariants are enforced rather than aspirational, the multi-tenancy design closes the two ways RLS is normally defeated, and the payment-durability chain is careful work with the authority question properly pinned. Most of what a reviewer would attack, it has already closed.</p>
+<p>Its defects are not in reasoning. They are in <strong>inputs and arithmetic</strong>: three <code>[CONFIRMED]</code> technology pins are end-of-life as of today, one confirmed decision deletes a bounded context the parent PAD defines, and the delivery plan consumes all 26 weeks of the six-month budget with zero slack against a team size that appears once in passing and is absent from the assumption register.</p>
+<p><strong>Fixing the version pins is nearly free today and expensive after Wave 0 builds on them.</strong></p>
+</div>
+
+<h2>Dimension verdicts</h2>
+<table><tr><th>Dimension</th><th>Verdict</th></tr>
+<tr><td>Divergence points fixed for the level below</td><td class="v-strong">strong</td></tr>
+<tr><td>Rules enforceable</td><td class="v-strong">strong</td></tr>
+<tr><td>Deferred items safe</td><td class="v-adequate">adequate</td></tr>
+<tr><td>Named technology verified-current</td><td class="v-broken">broken</td></tr>
+<tr><td>Coverage of parent PAD</td><td class="v-thin">thin</td></tr>
+<tr><td>Operational envelope</td><td class="v-strong">strong</td></tr>
+<tr><td>Delivery realism</td><td class="v-thin">thin</td></tr></table>
+
+<h2>Critical</h2>
+<div class="f critical"><span class="tag">critical</span><h3>Laravel 11 is end-of-life</h3> <span class="loc">§1.1 D-03, §3.1</span>
+<p>Security support ended 2026-03-12. Laravel 13 is current. This is greenfield — switching costs nothing now. The §3.1 rationale for Laravel over Nest.js is sound and survives the repin; only the version is wrong.</p>
+<p><span class="fix">Fix:</span> repin to Laravel 12/13; re-verify §5.2 tenancy middleware against it before Wave 0.</p></div>
+
+<div class="f critical"><span class="tag">critical</span><h3>Nuxt 3 is end-of-life</h3> <span class="loc">§1.1 D-13, §3.2</span>
+<p>Reached EOL 2026-07-31; Nuxt 4.5.x is current. Wave 0 builds the Nuxt shell and tenant theming — exactly the work you do not want to do twice.</p>
+<p><span class="fix">Fix:</span> repin to Nuxt 4 before Wave 0.</p></div>
+
+<div class="f critical"><span class="tag">critical</span><h3>Zero-slack plan on an unstated team size</h3> <span class="loc">§18, §19, §3.1</span>
+<p>Waves 0–3 run weeks 1–3 / 4–12 / 13–20 / 21–26 — exactly the six-month budget, no buffer — against ~62 tables in Waves 1–2, 19 modules, a Nuxt portal, an Android POS with durable ledger and OTA, and five open decisions with blocking dates inside the plan. §3.1 mentions "a single backend engineer and a technical lead" in passing; that assumption, on which the whole plan rests, is <strong>not in §19</strong> while far smaller ones (A-05 settlement format, A-07 currency display) are.</p>
+<p><span class="fix">Fix:</span> add team composition as A-11; then extend the timeline, cut Wave 2/3 scope, or declare which wave is the real GO/NO-GO.</p></div>
+
+<h2>High</h2>
+<div class="f high"><span class="tag">high</span><h3>D-10 deletes a bounded context the PAD defines</h3> <span class="loc">§1.1</span>
+<p>The TAD puts tax "out of scope — handled on the payment side." The parent PAD defines <strong>§2.22 Tax Services Context</strong> and lists مالیات in §1.8. A child document cannot unilaterally remove a parent's bounded context. "The payment side" also names no owning system — the one decision in the register that defers to an unnamed party.</p>
+<p><span class="fix">Fix:</span> amend the PAD to drop the context, or restore tax as deferred-but-owned. Name the owner either way.</p></div>
+
+<div class="f high"><span class="tag">high</span><h3>targetSdk 32 is unpublishable on Google Play</h3> <span class="loc">§1.1 D-14, §3.3</span>
+<p>From 2026-08-31 new apps and updates must target API 36; existing apps need API 35+ to reach new users. The decision also conflates two settings: <code>minSdk 27</code> is what delivers the stated Android 8.0 baseline and is correct; <code>targetSdk</code> does not affect device reach and is given no rationale. If distribution is OTA-only (§12.6) the policy does not bind — but the TAD never states the distribution channel.</p>
+<p><span class="fix">Fix:</span> state the channel. If Play is in scope at any horizon, raise targetSdk and budget behaviour-change testing. Keep minSdk 27.</p></div>
+
+<div class="f high"><span class="tag">high</span><h3>No rule on whether cross-module references are real database FKs</h3> <span class="loc">§4.1, §7.1</span>
+<p>§7.1 covers FK <em>naming</em>, not <em>enforcement</em>. Two teams can each obey every §4.1 rule and still produce inconsistent referential guarantees — and a real FK across a module boundary blocks the later service extraction that §4's stated goal and the Dedicated-SaaS horizon both depend on.</p>
+<p><span class="fix">Fix:</span> state that cross-module references are logical ids with no database-level FK, integrity enforced in the owning module — or state the inverse. Either is defensible; silence is not.</p></div>
+
+<div class="f high"><span class="tag">high</span><h3>Tenant context has no defined propagation into queued jobs or the outbox relay</h3> <span class="loc">§5.2, §5.5, §10</span>
+<p><code>SET LOCAL app.tenant_id</code> is transaction-scoped and correct for HTTP requests. §5.5 extends isolation to Redis, Kafka, object storage and logs — but no line covers the database connection of a background worker. A queued job opens a fresh connection with no tenant set, so RLS reads return empty. The dangerous <em>compliant</em> response is a worker connecting through the §5.4 platform-scope bypass role, turning an audited escape hatch into a routine background path.</p>
+<p><span class="fix">Fix:</span> mandate <code>tenant_id</code> on every job and the relay, re-established via the same middleware; forbid the bypass role to queue workers by configuration; add an in-job RLS isolation test to §16.4.</p></div>
+
+<h2>Medium &amp; low</h2>
+<div class="f medium"><span class="tag">medium</span><h3>D-12 and Cluster 14 add scope beyond the PAD's MVP</h3>
+<p>Bot notifications in MVP and marketplace in Wave 3 are not in PAD §1.30's MVP list — additions made in the child document, against a timeline with no slack.</p></div>
+<div class="f medium"><span class="tag">medium</span><h3>§18 overstates the critical path</h3>
+<p>It claims O-01 and O-02 are "the only true external blockers … both neutralised by the fake-adapter strategy." But A-04 (Payment Core inquiry/verify endpoint) is bold-flagged in §19 and rated High in §20. A fake adapter cannot neutralise a missing capability in a real upstream system. <span class="fix">Fix:</span> promote A-04 to an O-item with an owner and a date earlier than week 6.</p></div>
+<div class="f medium"><span class="tag">medium</span><h3>Read models permitted with no stated writer rule</h3>
+<p><code>customer_stats</code> happens to be resolved by the §10.5 <code>CustomerStatsProjector</code>, but it is defined in Cluster 8, scheduled under Customer in Wave 2, and projected as a Reporting concern — three placements, no rule. Cluster 15's other read models have no named projector. <span class="fix">Fix:</span> every table has exactly one writing module, named.</p></div>
+<div class="f medium"><span class="tag">medium</span><h3>PHP 8.3 is in security-only maintenance</h3>
+<p>Security-only until 2027-12-31 — a forced upgrade inside the first year of a declared 3–5 year horizon. PHP 8.4/8.5 cost nothing extra at greenfield; do it in the same migration as the Laravel repin.</p></div>
+<div class="f low"><span class="tag">low</span><h3>Redis 7 pinned without noting the 2024 relicensing / Valkey split</h3></div>
+<div class="f low"><span class="tag">low</span><h3>Parent status is self-contradictory</h3>
+<p>PAD header says تأیید نشده; PAD §1.1's chapter table says تأییدشده. The TAD's "Not approved" matches one and not the other.</p></div>
+
+<div class="good"><h2>What the document already gets right</h2>
+<p>These attacks were attempted and <strong>failed</strong> — the document closes them:</p>
+<ul>
+<li><strong>Payment authority on <code>unknown</code></strong> — §9.2 step 7 makes Payment Core authoritative; §9.5 forbids reconciliation from altering a <code>succeeded</code>/<code>failed</code> payment without an audited manual action.</li>
+<li><strong>Receipt printed before sync</strong> — permitted, but annotated "در انتظار همگام‌سازی" with a pending-sync indicator. The ambiguity is surfaced to the human, not hidden.</li>
+<li><strong>Two devices claiming one payment request</strong> — <code>SELECT … FOR UPDATE SKIP LOCKED</code> (§9.3).</li>
+<li><strong>Duplicate event processing</strong> — at-least-once plus <code>processed_events</code> dedupe (§10.2).</li>
+<li><strong>Kafka as a correctness dependency</strong> — removed by the transactional outbox, which also neutralises assumption A-02 (§10.2).</li>
+</ul>
+<p>Also notably strong: <code>deptrac</code> as <em>automated</em> boundary enforcement rather than review convention (§4.1) · <code>FORCE ROW LEVEL SECURITY</code> plus a non-superuser non-owner role, closing both silent-RLS-bypass paths (§5.2) · naming the RLS isolation test and the process-death test as "the two that will save the project" (§16.4) · a complete operational envelope (§3.4, §15, §16, §17) that domain-focused drafts routinely skip.</p></div>
+
+<footer>
+Reviewer files: <code>reviews/review-currency.md</code> · <code>reviews/review-adversarial.md</code> · <code>reviews/review-rubric.md</code> · <code>review-prd-blocked.md</code><br>
+<code>lint_spine.py</code> not run — it validates BMad <code>ARCHITECTURE-SPINE.md</code> format; this is a conventional TAD. Reviewer lenses run inline rather than as parallel subagents, per this session's operating constraints. Version claims verified against the live web on 2026-09-16, not recalled.
+</footer>
+</div></body></html>
